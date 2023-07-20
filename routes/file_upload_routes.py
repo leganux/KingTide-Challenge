@@ -1,9 +1,10 @@
 import os
 import traceback
+import shutil
 
 max_file_size = 5 * 1024 * 1024
 
-from fastapi import FastAPI, File, UploadFile, HTTPException, APIRouter
+from fastapi import FastAPI, File, UploadFile, HTTPException, APIRouter, Request
 
 upload = APIRouter(
     prefix="/api/v1/files",
@@ -17,37 +18,34 @@ upload = APIRouter(
 
 
 @upload.post("/")
-async def upload_file(uploaded_file: UploadFile = File(...)):
+async def upload_file(request: Request, uploaded_file: UploadFile = File(...)):
     try:
-        file_size = 0
-        with open(uploaded_file.filename, "wb") as file_object:
-            for chunk in uploaded_file.file:
-                file_size += len(chunk)
-                if file_size > max_file_size:
-                    raise HTTPException(status_code=400, detail="El archivo excede el tamaño máximo permitido")
 
         file_extension = os.path.splitext(uploaded_file.filename)[1]
-        allowed_extensions = ['.pdf', '.docx', '.doc']
+        allowed_extensions = ['.doc', '.docx', '.pdf']
         if file_extension.lower() not in allowed_extensions:
             raise HTTPException(status_code=400, detail="El archivo debe ser de tipo PDF, DOCX, o DOC")
 
         directory = "files/docs"
         os.makedirs(directory, exist_ok=True)
 
-        file_location = f"files/docs/{uploaded_file.filename}"
-        with open(file_location, "wb+") as file_object:
-            file_object.write(uploaded_file.file.read())
+        with open(directory + '/' + uploaded_file.filename, "wb") as buffer:
+            shutil.copyfileobj(uploaded_file.file, buffer)
 
-            print('uploaded_file', uploaded_file)
+        host = request.headers.get("host")
+        protocol = request.headers.get("x-forwarded-proto") or request.url.scheme
 
         return {
             "status": "Ok",
             "data": {
                 "name": uploaded_file.filename,
-                "location": file_location,
+                "location": f"{protocol}://{host}/{directory + '/' + uploaded_file.filename}",
             },
             "success": True
         }
+
+
+
     except HTTPException as e:
         raise e  # Re-raise the HTTPException to return the appropriate response
     except Exception as e:

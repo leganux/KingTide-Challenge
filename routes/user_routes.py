@@ -1,3 +1,4 @@
+import datetime
 import traceback
 
 from fastapi import APIRouter, HTTPException
@@ -7,7 +8,7 @@ from bson import ObjectId
 from config.db import collection
 
 user = APIRouter(
-    prefix="/api/v1//user",
+    prefix="/api/v1/user",
     tags=["user"],
     responses={
         404: {"description": "Not found", "example": {"error": "error"}},
@@ -20,6 +21,7 @@ user = APIRouter(
 @user.post("/")
 async def create_one(user: User):
     try:
+        user.created_at = datetime.datetime.utcnow()
         _id = collection.insert_one(dict(user))
         user = users_serializer(collection.find({"_id": _id.inserted_id}))
         return {

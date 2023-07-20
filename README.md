@@ -14,6 +14,7 @@ $ export PYTHONPATH=$PWD
 ```` shell
 pip install fastapi pymongo uvicorn
 pip install python-multipart
+pip install boto3
 ````
 
 ## Ejecutando API 

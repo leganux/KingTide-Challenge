@@ -4,8 +4,18 @@ from routes.user_routes import user
 from routes.file_routes import file
 from routes.file_upload_routes import upload as file_up
 from routes.photo_upload_routes import upload as photo_up
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
