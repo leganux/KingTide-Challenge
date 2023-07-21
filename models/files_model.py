@@ -3,8 +3,8 @@ from datetime import date, datetime, time, timedelta
 
 
 class File(BaseModel):
-    id: int
-    file: str
-    user_id: str
-    created_at: datetime
-    updated_at: datetime
+    id: int = None
+    file: str = None
+    user_id: str = None
+    created_at: datetime = None
+    updated_at: datetime = None

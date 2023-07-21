@@ -1,8 +1,11 @@
+import json
+
+
 def user_serializer(user) -> dict:
     return {
         'id': str(user["_id"]),
         'name': user["name"],
-        'cv': str(user["cv"]),
+        'cv': user["cv"],
         'lastName': user["lastName"],
         'surName': user["surName"],
         'rfc': user["rfc"],

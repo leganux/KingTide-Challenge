@@ -1,3 +1,4 @@
+import datetime
 import traceback
 
 from fastapi import APIRouter, HTTPException
@@ -20,6 +21,7 @@ file = APIRouter(
 @file.post("/")
 async def create_one(file: File):
     try:
+        file.created_at = datetime.datetime.utcnow()
         _id = collection_files.insert_one(dict(file))
         file = files_serializer(collection_files.find({"_id": _id.inserted_id}))
         return {
@@ -56,6 +58,7 @@ async def get_all():
 async def get_one(id: str):
     try:
         file = files_serializer(collection_files.find({"_id": ObjectId(id)}))
+        print(file)
         if file is None or len(file) == 0:
             raise HTTPException(status_code=404, detail="User not found")
 
@@ -75,6 +78,7 @@ async def get_one(id: str):
 @file.put("/{id}")
 async def update(id: str, file: File):
     try:
+        file.updated_at = datetime.datetime.utcnow()
         collection_files.find_one_and_update(
             {
                 "_id": ObjectId(id)

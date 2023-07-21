@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException
 from models.user_model import User
 from schemas.user_schema import users_serializer
 from bson import ObjectId
-from config.db import collection
+from config.db import collection, collection_files
 
 user = APIRouter(
     prefix="/api/v1/user",
@@ -47,10 +47,11 @@ async def get_all():
             "success": True
         }
     except HTTPException as e:
+
         raise e  # Re-raise the HTTPException to return the appropriate response
     except Exception as e:
         traceback_str = traceback.format_exc()
-        print("ERROR", e)
+        print("ERROR", traceback_str)
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {traceback_str}")
 
 
@@ -77,6 +78,7 @@ async def get_one(id: str):
 @user.put("/{id}")
 async def update(id: str, user: User):
     try:
+        user.updated_at = datetime.datetime.utcnow()
         collection.find_one_and_update(
             {
                 "_id": ObjectId(id)
