@@ -12,6 +12,7 @@ $ export PYTHONPATH=$PWD
 
 ## Instalando dependencias
 ```` shell
+pip install -r requirements.txt
 pip install fastapi pymongo uvicorn
 pip install python-multipart
 pip install boto3
@@ -33,6 +34,22 @@ Nunca habia trabajado desde cero con MongoDB y FastAPI Asi que decidí usar ese 
 - Relice la definicion de los schemas base con ayuda de pydantic https://docs.pydantic.dev
 - Ralice la integración d ela base de datos con mongoDB usando pymongo https://pymongo.readthedocs.io/en/stable/
 - y monte la API con ayuda de FastAPI https://fastapi.tiangolo.com
+
+## Ver Online
+https://thejavascript.zone ** El domino es el unico disponible que tenia 
+
+## Documentación
+
+https://thejavascript.zone/docs
+
+## Infrestructura
+
+- Fue desplegado en EC2
+- nginx como proxy inverso
+- Cloudflare como manejador de DNS, Seguridad y SSL
+
+
+
 
 
 
